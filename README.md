@@ -8,7 +8,7 @@ orders, drivers and deliveries.
 
 ## Technologies
 
-- PostgreSQL
+- MYSQL
 - SQL
 - Python
 - Pandas
@@ -23,3 +23,25 @@ orders, drivers and deliveries.
 - Build a small ETL pipeline
 - Clean and transform data using Python
 - Generate useful business insights
+
+## Database Design
+
+The database contains seven main tables:
+
+- customers
+- products
+- orders
+- order_items
+- drivers
+- vehicles
+- deliveries
+
+### Relationships
+
+- One customer can place many orders.
+- One order can contain many products.
+- One product can appear in many orders.
+- The order_items table handles the many-to-many relationship between orders and products.
+- One order has one delivery.
+- One driver can complete many deliveries.
+- One vehicle can be used for many deliveries.
