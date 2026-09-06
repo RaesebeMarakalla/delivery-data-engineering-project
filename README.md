@@ -45,3 +45,21 @@ The database contains seven main tables:
 - One order has one delivery.
 - One driver can complete many deliveries.
 - One vehicle can be used for many deliveries.
+
+## Database Implementation
+
+The database was implemented using MySQL.
+
+The database is called `delivery_db` and contains seven relational tables:
+
+- `customers`
+- `products`
+- `orders`
+- `order_items`
+- `drivers`
+- `vehicles`
+- `deliveries`
+
+Primary keys are used to uniquely identify records, while foreign keys are used to establish relationships between related tables.
+
+The `order_items` table acts as a junction table between `orders` and `products`, allowing an order to contain multiple products and a product to appear in multiple orders.
