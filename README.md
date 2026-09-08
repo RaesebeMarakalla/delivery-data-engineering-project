@@ -1,65 +1,79 @@
 # Delivery & Logistics Data Engineering Project
 
-## Project Overview
+## Overview
 
-This project is a small data engineering and relational database
-project for managing a delivery company's customers, products,
-orders, drivers and deliveries.
+This project models the core data required by a delivery company: customers, products, orders, order items, drivers, vehicles, and deliveries. It is being built as a practical data-engineering project using MySQL, SQL, Python, and Pandas.
+
+## Work completed today
+
+- Created the MySQL database setup script.
+- Created seven related tables with primary keys, foreign keys, and appropriate constraints.
+- Added an initial data-seeding script for the `customers` table.
+- Inserted 10 sample customers from Gauteng-area locations to support testing and future analysis.
+- Documented the database design and the relationships between the tables.
 
 ## Technologies
 
-- MYSQL
+- MySQL
 - SQL
 - Python
 - Pandas
-- Git
-- GitHub
+- Git and GitHub
 
-## Project Goals
+## Database schema
 
-- Design a relational database
-- Store delivery company data
-- Write SQL queries for analysis
-- Build a small ETL pipeline
-- Clean and transform data using Python
-- Generate useful business insights
+The `delivery_db` database contains the following tables:
 
-## Database Design
+- `customers`: customer contact and location details
+- `products`: products available to purchase
+- `orders`: orders placed by customers
+- `order_items`: junction table connecting orders and products
+- `drivers`: delivery-driver details
+- `vehicles`: delivery-vehicle details
+- `deliveries`: delivery assignment and status information
 
-The database contains seven main tables:
+Key relationships:
 
-- customers
-- products
-- orders
-- order_items
-- drivers
-- vehicles
-- deliveries
+- A customer can place many orders.
+- An order can contain many products through `order_items`.
+- A driver and a vehicle can each be assigned to many deliveries.
+- Each delivery is linked to an order, driver, and vehicle.
 
-### Relationships
+For a fuller description, see [the database design documentation](sql/database_design.md).
 
-- One customer can place many orders.
-- One order can contain many products.
-- One product can appear in many orders.
-- The order_items table handles the many-to-many relationship between orders and products.
-- One order has one delivery.
-- One driver can complete many deliveries.
-- One vehicle can be used for many deliveries.
+## Project structure
 
-## Database Implementation
+```text
+.
+|-- data/                 # Source and processed data files
+|-- python/               # ETL and analysis scripts
+|-- screenshots/          # Project screenshots
+`-- sql/
+    |-- 01_create_database.sql
+    |-- 02_create_tables.sql
+    |-- 03_insert_data.sql
+    `-- database_design.md
+```
 
-The database was implemented using MySQL.
+## Running the database scripts
 
-The database is called `delivery_db` and contains seven relational tables:
+Run the SQL files in this order in MySQL:
 
-- `customers`
-- `products`
-- `orders`
-- `order_items`
-- `drivers`
-- `vehicles`
-- `deliveries`
+1. `sql/01_create_database.sql`: creates `delivery_db`.
+2. `sql/02_create_tables.sql`: creates the seven tables and their relationships.
+3. `sql/03_insert_data.sql`: loads the initial customer sample data.
 
-Primary keys are used to uniquely identify records, while foreign keys are used to establish relationships between related tables.
+For example, from a MySQL client:
 
-The `order_items` table acts as a junction table between `orders` and `products`, allowing an order to contain multiple products and a product to appear in multiple orders.
+```sql
+SOURCE sql/01_create_database.sql;
+SOURCE sql/02_create_tables.sql;
+SOURCE sql/03_insert_data.sql;
+```
+
+## Next steps
+
+- Add sample data for products, orders, drivers, vehicles, and deliveries.
+- Create SQL queries for delivery and customer analysis.
+- Build a Python/Pandas ETL pipeline to clean and transform source data.
+- Produce business insights and visualisations from the completed dataset.
