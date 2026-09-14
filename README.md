@@ -10,7 +10,7 @@ This project models the core data required by a delivery company: customers, pro
 - Created seven related tables with primary keys, foreign keys, and appropriate constraints.
 - Added an initial data-seeding script for the `customers` table.
 - Inserted 10 sample customers from Gauteng-area locations to support testing and future analysis.
-- Added 10 sample products, 10 customer orders, 5 drivers, 5 vehicles, and 10 delivery assignments.
+- Added 10 sample products, 10 customer orders, 10 order items, 5 drivers, 5 vehicles, and 10 delivery assignments.
 - Documented the database design and the relationships between the tables.
 
 ## Sample data
@@ -24,6 +24,10 @@ The seeded customer, product, order, driver, vehicle, and delivery data can be v
 ### Orders
 
 ![Order data](screenshots/order-data.png)
+
+### Order Items
+
+![Order item data](screenshots/order-items-data.png)
 
 ### Drivers
 
@@ -82,6 +86,7 @@ For a fuller description, see [the database design documentation](sql/database_d
     |-- 06_insert_drivers.sql
     |-- 07_insert_vehicles.sql
     |-- 08_insert_deliveries.sql
+    |-- 09_insert_order_items.sql
     `-- database_design.md
 ```
 
@@ -97,6 +102,7 @@ Run the SQL files in this order in MySQL:
 6. `sql/06_insert_drivers.sql`: loads the driver sample data.
 7. `sql/07_insert_vehicles.sql`: loads the vehicle sample data.
 8. `sql/08_insert_deliveries.sql`: loads the delivery sample data.
+9. `sql/09_insert_order_items.sql`: loads the order-item sample data.
 
 For example, from a MySQL client:
 
@@ -109,6 +115,7 @@ SOURCE sql/05_insert_orders.sql;
 SOURCE sql/06_insert_drivers.sql;
 SOURCE sql/07_insert_vehicles.sql;
 SOURCE sql/08_insert_deliveries.sql;
+SOURCE sql/09_insert_order_items.sql;
 ```
 
 ## Next steps
