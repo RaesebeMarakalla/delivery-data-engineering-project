@@ -13,6 +13,10 @@ This project models the core data required by a delivery company: customers, pro
 - Added 10 sample products, 10 customer orders, 10 order items, 5 drivers, 5 vehicles, and 10 delivery assignments.
 - Documented the database design and the relationships between the tables.
 
+- Documented the database design and the relationships between the tables.
+- Wrote JOIN queries combining customers, orders, order_items, products, drivers, and vehicles into meaningful views.
+- Used LEFT JOIN queries to find customers with no orders, products never ordered, and delivery counts per driver.
+
 ## Sample data
 
 The seeded customer, product, order, driver, vehicle, and delivery data can be viewed in the project screenshots.
@@ -87,6 +91,7 @@ For a fuller description, see [the database design documentation](sql/database_d
     |-- 07_insert_vehicles.sql
     |-- 08_insert_deliveries.sql
     |-- 09_insert_order_items.sql
+    |-- 10_join_queries.sql
     `-- database_design.md
 ```
 
@@ -103,6 +108,8 @@ Run the SQL files in this order in MySQL:
 7. `sql/07_insert_vehicles.sql`: loads the vehicle sample data.
 8. `sql/08_insert_deliveries.sql`: loads the delivery sample data.
 9. `sql/09_insert_order_items.sql`: loads the order-item sample data.
+9. `sql/09_insert_order_items.sql`: loads the order-item sample data.
+10. `sql/10_join_queries.sql`: runs JOIN queries across the tables (customer orders, delivery details, and gaps like customers with no orders).
 
 For example, from a MySQL client:
 
@@ -116,11 +123,12 @@ SOURCE sql/06_insert_drivers.sql;
 SOURCE sql/07_insert_vehicles.sql;
 SOURCE sql/08_insert_deliveries.sql;
 SOURCE sql/09_insert_order_items.sql;
+SOURCE sql/10_join_queries.sql;
 ```
 
 ## Next steps
 
-- Add sample data for order items.
-- Create SQL queries for delivery and customer analysis.
+- Write analytics queries (totals, averages, counts by group).
 - Build a Python/Pandas ETL pipeline to clean and transform source data.
+- Load cleaned data into the database via the ETL pipeline.
 - Produce business insights and visualisations from the completed dataset.
