@@ -1,23 +1,19 @@
-# Delivery & Logistics Data Engineering Project
-
-## Overview
+Delivery & Logistics Data Engineering Project
+Overview
 
 This project models the core data required by a delivery company: customers, products, orders, order items, drivers, vehicles, and deliveries. It is being built as a practical data-engineering project using MySQL, SQL, Python, and Pandas.
 
-## Work completed today
-
-- Created the MySQL database setup script.
-- Created seven related tables with primary keys, foreign keys, and appropriate constraints.
-- Added an initial data-seeding script for the `customers` table.
-- Inserted 10 sample customers from Gauteng-area locations to support testing and future analysis.
-- Added 10 sample products, 10 customer orders, 10 order items, 5 drivers, 5 vehicles, and 10 delivery assignments.
-- Documented the database design and the relationships between the tables.
-
-- Documented the database design and the relationships between the tables.
-- Wrote JOIN queries combining customers, orders, order_items, products, drivers, and vehicles into meaningful views.
-- Used LEFT JOIN queries to find customers with no orders, products never ordered, and delivery counts per driver.
-
-## Sample data
+Work completed today
+Created the MySQL database setup script.
+Created seven related tables with primary keys, foreign keys, and appropriate constraints.
+Added an initial data-seeding script for the customers table.
+Inserted 10 sample customers from Gauteng-area locations to support testing and future analysis.
+Added 10 sample products, 10 customer orders, 10 order items, 5 drivers, 5 vehicles, and 10 delivery assignments.
+Documented the database design and the relationships between the tables.
+Wrote JOIN queries combining customers, orders, order_items, products, drivers, and vehicles into meaningful views.
+Used LEFT JOIN queries to find customers with no orders, products never ordered, and delivery counts per driver.
+Wrote analytics queries: totals (revenue by status/category/product/customer), averages (order value, price, delivery time), and counts by group (customers per city, deliveries per driver/vehicle/status).
+Sample data
 
 The seeded customer, product, order, driver, vehicle, and delivery data can be viewed in the project screenshots.
 
@@ -76,7 +72,6 @@ For a fuller description, see [the database design documentation](sql/database_d
 
 ## Project structure
 
-```text
 .
 |-- data/                 # Source and processed data files
 |-- python/               # ETL and analysis scripts
@@ -92,8 +87,8 @@ For a fuller description, see [the database design documentation](sql/database_d
     |-- 08_insert_deliveries.sql
     |-- 09_insert_order_items.sql
     |-- 10_join_queries.sql
+    |-- 11_analytics_queries.sql
     `-- database_design.md
-```
 
 ## Running the database scripts
 
@@ -110,6 +105,7 @@ Run the SQL files in this order in MySQL:
 9. `sql/09_insert_order_items.sql`: loads the order-item sample data.
 9. `sql/09_insert_order_items.sql`: loads the order-item sample data.
 10. `sql/10_join_queries.sql`: runs JOIN queries across the tables (customer orders, delivery details, and gaps like customers with no orders).
+11. `sql/11_analytics_queries.sql`: runs analytics queries (totals, averages, counts by group, and a data-quality check).
 
 For example, from a MySQL client:
 
@@ -124,11 +120,11 @@ SOURCE sql/07_insert_vehicles.sql;
 SOURCE sql/08_insert_deliveries.sql;
 SOURCE sql/09_insert_order_items.sql;
 SOURCE sql/10_join_queries.sql;
+SOURCE sql/11_analytics_queries.sql;
 ```
 
 ## Next steps
 
-- Write analytics queries (totals, averages, counts by group).
 - Build a Python/Pandas ETL pipeline to clean and transform source data.
 - Load cleaned data into the database via the ETL pipeline.
 - Produce business insights and visualisations from the completed dataset.
