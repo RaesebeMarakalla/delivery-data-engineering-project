@@ -125,6 +125,33 @@ SOURCE sql/11_analytics_queries.sql;
 
 ## Next steps
 
-- Build a Python/Pandas ETL pipeline to clean and transform source data.
-- Load cleaned data into the database via the ETL pipeline.
+- Build a Python/Pandas ETL pipeline to clean and transform source data. **Completed:** `python/etl_pipeline.py` reads the CSV files in `data/raw/`, standardizes text, parses dates and numeric values, validates required fields and foreign-key relationships, and writes cleaned files to `data/processed/`.
+- Load cleaned data into the database via the ETL pipeline. **Completed:** the pipeline upserts cleaned rows into MySQL in foreign-key order.
 - Produce business insights and visualisations from the completed dataset.
+
+## Running the Pandas ETL pipeline
+
+Install the Python dependencies:
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+Run the cleaning and validation step without changing MySQL:
+
+```bash
+python python/etl_pipeline.py --dry-run
+```
+
+The dry run creates cleaned CSV files in `data/processed/`. To load them into `delivery_db`, first run the database setup scripts above, then set the connection variables and run the pipeline:
+
+```powershell
+$env:DB_HOST = "localhost"
+$env:DB_PORT = "3306"
+$env:DB_USER = "root"
+$env:DB_PASSWORD = "your-password"
+$env:DB_NAME = "delivery_db"
+python python/etl_pipeline.py
+```
+
+The loader uses `INSERT ... ON DUPLICATE KEY UPDATE`, so the same source files can be loaded again without creating duplicate records. The raw CSV files are deliberately small sample inputs matching the existing SQL seed data and can be replaced with new extracts that use the same column names.

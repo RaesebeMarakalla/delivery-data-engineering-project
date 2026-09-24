@@ -1,0 +1,11 @@
+product_id,product_name,category,price
+1,Laptop,Electronics,12500.0
+2,Wireless Mouse,Electronics,350.0
+3,Keyboard,Electronics,650.0
+4,Office Chair,Furniture,2200.0
+5,Desk,Furniture,3500.0
+6,Monitor,Electronics,4500.0
+7,Printer,Electronics,2800.0
+8,Notebook,Stationery,80.0
+9,Backpack,Accessories,750.0
+10,Water Bottle,Accessories,250.0

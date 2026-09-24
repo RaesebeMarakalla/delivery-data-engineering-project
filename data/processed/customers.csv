@@ -1,0 +1,11 @@
+customer_id,name,email,phone,city
+1,Thabo Mokoena,thabo@example.com,0712345678,Johannesburg
+2,Lerato Dlamini,lerato@example.com,0723456789,Pretoria
+3,Sipho Nkosi,sipho@example.com,0734567890,Soweto
+4,Naledi Molefe,naledi@example.com,0745678901,Sandton
+5,Kabelo Maseko,kabelo@example.com,0756789012,Midrand
+6,Aisha Khan,aisha@example.com,0767890123,Randburg
+7,David Williams,david@example.com,0778901234,Roodepoort
+8,Mpho Radebe,mpho@example.com,0789012345,Centurion
+9,Zanele Khumalo,zanele@example.com,0790123456,Benoni
+10,Brian Smith,brian@example.com,0801234567,Germiston

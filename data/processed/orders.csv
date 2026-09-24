@@ -1,0 +1,11 @@
+order_id,customer_id,order_date,status,total_amount
+1,1,2026-09-01,Delivered,12500.0
+2,2,2026-09-02,Delivered,350.0
+3,3,2026-09-03,In Transit,2200.0
+4,4,2026-09-04,Processing,4500.0
+5,5,2026-09-05,Delivered,750.0
+6,6,2026-09-06,In Transit,2800.0
+7,7,2026-09-07,Processing,650.0
+8,8,2026-09-08,Delivered,3500.0
+9,9,2026-09-09,Delivered,80.0
+10,10,2026-09-10,In Transit,250.0

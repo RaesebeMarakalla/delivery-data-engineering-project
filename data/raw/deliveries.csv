@@ -1,0 +1,11 @@
+delivery_id,order_id,driver_id,vehicle_id,delivery_date,status
+1,1,1,1,2026-09-02,delivered
+2,2,2,3,2026-09-03,delivered
+3,3,3,2,2026-09-04,in transit
+4,4,4,4,,processing
+5,5,5,5,2026-09-06,delivered
+6,6,1,1,2026-09-07,in transit
+7,7,2,3,,processing
+8,8,3,2,2026-09-09,delivered
+9,9,4,4,2026-09-10,delivered
+10,10,5,5,2026-09-11,in transit
