@@ -13,6 +13,7 @@ This project models the core data required by a delivery company: customers, pro
 - Documented the database design and relationships.
 - Wrote SQL JOIN queries for customer orders, delivery details, and missing relationships.
 - Wrote analytics queries for totals, averages, and grouping by status, category, city, driver, and vehicle.
+- Added a deterministic generator for a larger, linked South African delivery demo dataset.
 - Built a Python ETL pipeline to clean and validate raw CSV data and load it into MySQL.
 - Added automated ETL data-quality tests.
 - Added a business-insights dashboard script that generates a revenue summary and chart.
@@ -79,7 +80,7 @@ For a fuller description, see [the database design documentation](sql/database_d
 
 .
 |-- data/                 # Raw source and processed output CSV files
-|-- python/               # ETL and analytics scripts
+|-- python/               # ETL, data generation, and analytics scripts
 |-- reports/              # Generated business-summary report and charts
 |-- screenshots/          # Project screenshots
 |-- sql/
@@ -96,6 +97,22 @@ For a fuller description, see [the database design documentation](sql/database_d
 |   |-- 11_analytics_query.sql
 |   `-- database_design.md
 `-- tests/                # Regression and ETL data-quality tests
+
+## Sample dataset
+
+The raw CSVs contain deterministic synthetic data for 250 customers, 35 products, 1,000 orders, 2,273 order items, 30 drivers, 24 vehicles, and 965 deliveries. Order totals match their item quantities and product prices; orders, customers, drivers, and vehicles use valid foreign keys. The original seed rows are retained. These records are for demonstration and are not production data.
+
+Regenerate the raw sample CSVs with:
+
+```bash
+python python/generate_sample_data.py
+```
+
+Then refresh processed files and validate the dataset:
+
+```bash
+python python/etl_pipeline.py --dry-run
+```
 
 ## Running the database scripts
 

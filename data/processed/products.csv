@@ -9,3 +9,28 @@ product_id,product_name,category,price
 8,Notebook,Stationery,80.0
 9,Backpack,Accessories,750.0
 10,Water Bottle,Accessories,250.0
+11,USB-C Docking Station,Electronics,1899.0
+12,Wireless Headphones,Electronics,1299.0
+13,1080p Webcam,Electronics,899.0
+14,Portable SSD 1TB,Electronics,1799.0
+15,Bluetooth Speaker,Electronics,699.0
+16,Android Tablet,Electronics,5499.0
+17,Smartphone,Electronics,8999.0
+18,Laptop Stand,Electronics,599.0
+19,Surge Protector,Electronics,399.0
+20,Laser Printer Toner,Electronics,1199.0
+21,Standing Desk,Furniture,6499.0
+22,Ergonomic Chair,Furniture,4299.0
+23,Filing Cabinet,Furniture,1899.0
+24,Desk Lamp,Furniture,549.0
+25,Bookshelf,Furniture,2499.0
+26,A4 Copy Paper 5 Reams,Stationery,399.0
+27,Ballpoint Pens 12 Pack,Stationery,89.0
+28,Whiteboard Markers 4 Pack,Stationery,119.0
+29,Lever Arch Files 10 Pack,Stationery,249.0
+30,Sticky Notes Assorted,Stationery,69.0
+31,Laptop Backpack,Accessories,1099.0
+32,Wireless Presenter,Accessories,449.0
+33,Reusable Coffee Cup,Accessories,179.0
+34,HDMI Cable 2m,Accessories,149.0
+35,Desk Organizer,Accessories,329.0

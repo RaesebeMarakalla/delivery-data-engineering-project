@@ -12,6 +12,10 @@ SCRIPT_PATH = ROOT / "python" / "etl_pipeline.py"
 SPEC = importlib.util.spec_from_file_location("etl_pipeline", SCRIPT_PATH)
 etl_pipeline = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(etl_pipeline)
+GENERATOR_PATH = ROOT / "python" / "generate_sample_data.py"
+GENERATOR_SPEC = importlib.util.spec_from_file_location("generate_sample_data", GENERATOR_PATH)
+sample_data = importlib.util.module_from_spec(GENERATOR_SPEC)
+GENERATOR_SPEC.loader.exec_module(sample_data)
 
 
 class EtlDataQualityTests(unittest.TestCase):
@@ -28,6 +32,45 @@ class EtlDataQualityTests(unittest.TestCase):
             self.assertEqual(sum(map(len, rejected.values())), 0)
             for table in etl_pipeline.LOAD_ORDER:
                 self.assertTrue((Path(temp_dir) / f"{table}.csv").exists())
+
+    def test_sample_generator_is_repeatable_and_preserves_relationships(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            data_dir = Path(temp_dir) / "raw"
+            shutil.copytree(ROOT / "data" / "raw", data_dir)
+
+            counts = sample_data.generate_sample_data(data_dir)
+            first_outputs = {
+                table: (data_dir / f"{table}.csv").read_bytes()
+                for table in etl_pipeline.LOAD_ORDER
+            }
+            repeated_counts = sample_data.generate_sample_data(data_dir)
+            tables, rejected = etl_pipeline.extract_transform(data_dir)
+
+            self.assertEqual(counts, repeated_counts)
+            self.assertEqual(counts, {
+                "customers": 250,
+                "products": 35,
+                "orders": 1000,
+                "order_items": 2273,
+                "drivers": 30,
+                "vehicles": 24,
+                "deliveries": 965,
+            })
+            self.assertEqual(
+                first_outputs,
+                {table: (data_dir / f"{table}.csv").read_bytes() for table in etl_pipeline.LOAD_ORDER},
+            )
+            self.assertEqual(sum(map(len, rejected.values())), 0)
+            line_totals = (
+                tables["order_items"]
+                .merge(tables["products"][ ["product_id", "price"] ], on="product_id")
+                .assign(line_total=lambda frame: frame["quantity"] * frame["price"])
+                .groupby("order_id")["line_total"]
+                .sum()
+                .round(2)
+            )
+            order_totals = tables["orders"].set_index("order_id")["total_amount"].round(2)
+            self.assertEqual(line_totals.to_dict(), order_totals.to_dict())
 
     def test_clean_table_normalizes_text_and_numeric_values(self):
         cleaned, rejected = self.clean_records("customers", [{
