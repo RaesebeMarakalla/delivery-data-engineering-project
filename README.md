@@ -137,7 +137,7 @@ Install the Python dependencies:
 python -m pip install -r requirements.txt
 ```
 
-The pipeline reads the seven source files from `data/raw/`, validates them, and writes cleaned files to `data/processed/`. Run the cleaning and validation step without changing MySQL:
+The pipeline reads the seven source files from `data/raw/`, writes accepted rows to `data/processed/`, and quarantines rejected rows in `data/rejected/`. Each rejected-row CSV includes the source CSV line number and rejection reason. Valid rows continue through the pipeline; missing source files or required columns stop the run. Use `--rejected-dir` to choose a different quarantine directory. Run the cleaning and validation step without changing MySQL:
 
 ```bash
 python python/etl_pipeline.py --dry-run
@@ -178,4 +178,4 @@ Run the automated regression and ETL data-quality tests:
 python -m unittest discover -s tests
 ```
 
-The checks cover CSV extraction, schema normalization, required values, unique primary keys, valid dates and quantities, and foreign-key relationships.
+The checks cover CSV extraction, schema normalization, required values, duplicate primary keys, invalid dates and quantities, foreign-key relationships, and rejected-row output.
