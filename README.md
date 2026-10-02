@@ -14,6 +14,7 @@ This project models the core data required by a delivery company: customers, pro
 - Wrote SQL JOIN queries for customer orders, delivery details, and missing relationships.
 - Wrote analytics queries for totals, averages, and grouping by status, category, city, driver, and vehicle.
 - Built a Python ETL pipeline to clean and validate raw CSV data and load it into MySQL.
+- Added automated ETL data-quality tests.
 - Added a business-insights dashboard script that generates a revenue summary and chart.
 
 ## Sample data
@@ -77,7 +78,7 @@ For a fuller description, see [the database design documentation](sql/database_d
 ## Project structure
 
 .
-|-- data/                 # Source and processed data files
+|-- data/                 # Raw source and processed output CSV files
 |-- python/               # ETL and analytics scripts
 |-- reports/              # Generated business-summary report and charts
 |-- screenshots/          # Project screenshots
@@ -94,7 +95,7 @@ For a fuller description, see [the database design documentation](sql/database_d
 |   |-- 10_join_queries.sql
 |   |-- 11_analytics_query.sql
 |   `-- database_design.md
-`-- tests/                # Regression checks for scripts
+`-- tests/                # Regression and ETL data-quality tests
 
 ## Running the database scripts
 
@@ -128,12 +129,6 @@ SOURCE sql/10_join_queries.sql;
 SOURCE sql/11_analytics_query.sql;
 ```
 
-## Completed next steps
-
-- Python/Pandas ETL pipeline: **Completed** — `python/etl_pipeline.py` reads the CSV files in `data/raw/`, standardizes text, parses dates and numeric values, validates required fields and foreign-key relationships, and writes cleaned files to `data/processed/`.
-- Load cleaned data into the database: **Completed** — the pipeline upserts cleaned rows into MySQL in foreign-key order.
-- Business insights and visualisation: **Completed** — `python/business_insights.py` reads the processed data, calculates KPIs, and saves the summary and chart in `reports/`.
-
 ## Running the Pandas ETL pipeline
 
 Install the Python dependencies:
@@ -142,24 +137,24 @@ Install the Python dependencies:
 python -m pip install -r requirements.txt
 ```
 
-Run the cleaning and validation step without changing MySQL:
+The pipeline reads the seven source files from `data/raw/`, validates them, and writes cleaned files to `data/processed/`. Run the cleaning and validation step without changing MySQL:
 
 ```bash
 python python/etl_pipeline.py --dry-run
 ```
 
-The dry run creates cleaned CSV files in `data/processed/`. To load them into `delivery_db`, first run the database setup scripts above, then set the connection variables and run the pipeline:
+To load the cleaned data into MySQL, set the database connection variables and run the pipeline:
 
 ```powershell
-$env:DB_HOST = "localhost"
+$env:DB_HOST = "your-mysql-host"
 $env:DB_PORT = "3306"
-$env:DB_USER = "root"
+$env:DB_USER = "your-database-user"
 $env:DB_PASSWORD = "your-password"
 $env:DB_NAME = "delivery_db"
 python python/etl_pipeline.py
 ```
 
-The loader uses `INSERT ... ON DUPLICATE KEY UPDATE`, so the same source files can be loaded again without creating duplicate records. The raw CSV files are deliberately small sample inputs matching the existing SQL seed data and can be replaced with new extracts that use the same column names.
+The loader uses `INSERT ... ON DUPLICATE KEY UPDATE`, so reruns update existing records. The processed CSV files remain available to the business-insights script.
 
 ## Business insights dashboard
 
@@ -171,12 +166,16 @@ python python/business_insights.py
 
 This script reads the cleaned CSVs in `data/processed/`, calculates key metrics such as revenue by category, average order value, and delivery success rate, and writes the outputs to `reports/business_summary.md` and `reports/revenue_by_category.png`.
 
+## Automated tests
+
+GitHub Actions runs the quality tests on pushes and pull requests. The test workflow needs no API or database secrets and can also be started manually from the Actions tab.
+
 ## Validation
 
-Run the regression check for the analytics script:
+Run the automated regression and ETL data-quality tests:
 
 ```bash
-python -m unittest discover -s tests -p "test_business_insights.py"
+python -m unittest discover -s tests
 ```
 
-This should pass if the dashboard script is present and callable.
+The checks cover CSV extraction, schema normalization, required values, unique primary keys, valid dates and quantities, and foreign-key relationships.

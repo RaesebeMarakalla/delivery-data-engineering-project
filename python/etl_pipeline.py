@@ -1,5 +1,5 @@
 
-"""Clean CSV source data and load it into the delivery MySQL database."""
+"""Clean local CSV source data, validate it, and load MySQL."""
 
 from __future__ import annotations
 
@@ -71,7 +71,7 @@ LOAD_ORDER = ["customers", "products", "orders", "drivers", "vehicles", "order_i
 
 
 def clean_table(table_name: str, source_dir: Path) -> pd.DataFrame:
-    """Read and standardize one source CSV according to its target schema."""
+    """Read, standardize, and validate one source CSV against its target schema."""
     config = TABLE_CONFIG[table_name]
     path = source_dir / f"{table_name}.csv"
     if not path.exists():
@@ -89,9 +89,17 @@ def clean_table(table_name: str, source_dir: Path) -> pd.DataFrame:
         frame[column] = frame[column].replace({"": pd.NA, "nan": pd.NA, "none": pd.NA})
 
     for column in config["numeric_columns"]:
-        frame[column] = pd.to_numeric(frame[column], errors="coerce")
+        converted = pd.to_numeric(frame[column], errors="coerce")
+        invalid = frame[column].notna() & converted.isna()
+        if invalid.any():
+            raise ValueError(f"{table_name}.{column} contains invalid numeric values")
+        frame[column] = converted
     for column in config["date_columns"]:
-        frame[column] = pd.to_datetime(frame[column], errors="coerce").dt.date
+        converted = pd.to_datetime(frame[column], errors="coerce")
+        invalid = frame[column].notna() & converted.isna()
+        if invalid.any():
+            raise ValueError(f"{table_name}.{column} contains invalid dates")
+        frame[column] = converted.dt.date
 
     if "email" in frame:
         frame["email"] = frame["email"].str.lower()
@@ -104,12 +112,14 @@ def clean_table(table_name: str, source_dir: Path) -> pd.DataFrame:
     if invalid_required.any():
         rows = (frame.index[invalid_required] + 2).tolist()
         raise ValueError(f"{path.name} has missing required values on CSV rows: {rows}")
+    if frame[config["primary_key"]].duplicated().any():
+        raise ValueError(f"{table_name} contains duplicate {config['primary_key']} values")
     if frame.duplicated().any():
-        raise ValueError(f"{path.name} contains duplicate rows")
+        raise ValueError(f"{table_name} contains duplicate rows")
     if "quantity" in frame and (frame["quantity"] <= 0).any():
-        raise ValueError(f"{path.name} contains non-positive quantities")
+        raise ValueError(f"{table_name} contains non-positive quantities")
     if "price" in frame and (frame["price"] < 0).any():
-        raise ValueError(f"{path.name} contains negative prices")
+        raise ValueError(f"{table_name} contains negative prices")
 
     return frame
 
@@ -132,7 +142,7 @@ def validate_relationships(tables: dict[str, pd.DataFrame]) -> None:
 
 
 def extract_transform(source_dir: Path, processed_dir: Path | None = None) -> dict[str, pd.DataFrame]:
-    """Extract all CSVs, transform them, validate relationships, and optionally persist them."""
+    """Extract all CSVs, transform and validate them, and optionally persist them."""
     tables = {table: clean_table(table, source_dir) for table in LOAD_ORDER}
     validate_relationships(tables)
     if processed_dir:
