@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import logging
 import os
 from pathlib import Path
 from typing import Any
@@ -15,6 +16,22 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SOURCE_DIR = ROOT / "data" / "raw"
 DEFAULT_PROCESSED_DIR = ROOT / "data" / "processed"
 DEFAULT_REJECTED_DIR = ROOT / "data" / "rejected"
+LOG_DIR = ROOT / "logs"
+LOG_DIR.mkdir(parents=True, exist_ok=True)
+
+logger = logging.getLogger("delivery_etl")
+if not logger.handlers:
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+
+    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
+
+    file_handler = logging.FileHandler(LOG_DIR / "etl_pipeline.log", mode="a")
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
 
 TABLE_CONFIG: dict[str, dict[str, Any]] = {
     "customers": {
@@ -78,6 +95,7 @@ def clean_table(table_name: str, source_dir: Path) -> tuple[pd.DataFrame, pd.Dat
     if not path.exists():
         raise FileNotFoundError(f"Missing source file: {path}")
 
+    logger.info("Cleaning table %s from %s", table_name, path)
     frame = pd.read_csv(path, dtype=str, keep_default_na=False)
     frame.columns = [column.strip().lower() for column in frame.columns]
     missing_columns = set(config["columns"]) - set(frame.columns)
@@ -132,6 +150,12 @@ def clean_table(table_name: str, source_dir: Path) -> tuple[pd.DataFrame, pd.Dat
 
     valid = frame.loc[~rejected_mask].copy()
     valid["__source_row"] = valid.index + 2
+    logger.info(
+        "Table %s: %d valid rows, %d rejected rows",
+        table_name,
+        len(valid),
+        len(rejected),
+    )
     return valid, rejected
 
 
@@ -159,6 +183,7 @@ def validate_relationships(tables: dict[str, pd.DataFrame]) -> dict[str, pd.Data
             )
 
     rejected: dict[str, pd.DataFrame] = {}
+    total_relationship_rejections = 0
     for table, rows in rejected_rows.items():
         if rows:
             invalid_indexes = list(rows)
@@ -169,8 +194,11 @@ def validate_relationships(tables: dict[str, pd.DataFrame]) -> dict[str, pd.Data
                 "source_row", *TABLE_CONFIG[table]["columns"], "reject_reason"
             ]]
             tables[table] = tables[table].drop(index=invalid_indexes)
+            total_relationship_rejections += len(invalid_indexes)
+            logger.warning("Rejected %d rows from %s due to invalid relationships", len(invalid_indexes), table)
 
         tables[table] = tables[table].drop(columns="__source_row").reset_index(drop=True)
+    logger.info("Relationship validation rejected %d rows across tables", total_relationship_rejections)
     return rejected
 
 
@@ -182,6 +210,7 @@ def extract_transform(
     """Extract, clean, and validate CSVs, returning accepted and rejected records."""
     tables: dict[str, pd.DataFrame] = {}
     rejected: dict[str, pd.DataFrame] = {}
+    logger.info("Starting extract-transform for source directory %s", source_dir)
     for table in LOAD_ORDER:
         tables[table], rejected[table] = clean_table(table, source_dir)
 
@@ -193,11 +222,17 @@ def extract_transform(
         processed_dir.mkdir(parents=True, exist_ok=True)
         for table, frame in tables.items():
             frame.to_csv(processed_dir / f"{table}.csv", index=False)
+            logger.info("Wrote %d accepted rows for %s", len(frame), table)
     if rejected_dir:
         rejected_dir.mkdir(parents=True, exist_ok=True)
         for table in LOAD_ORDER:
             columns = ["source_row", *TABLE_CONFIG[table]["columns"], "reject_reason"]
             rejected[table].reindex(columns=columns).to_csv(rejected_dir / f"{table}.csv", index=False)
+            logger.info("Wrote %d rejected rows for %s", len(rejected[table]), table)
+
+    total_accepted = sum(len(frame) for frame in tables.values())
+    total_rejected = sum(len(frame) for frame in rejected.values())
+    logger.info("ETL summary: %d accepted rows, %d rejected rows", total_accepted, total_rejected)
     return tables, rejected
 
 
@@ -205,6 +240,7 @@ def load_to_mysql(tables: dict[str, pd.DataFrame], connection_config: dict[str, 
     """Upsert transformed rows in foreign-key order, making reruns idempotent."""
     import mysql.connector
 
+    logger.info("Connecting to MySQL for data load")
     connection = mysql.connector.connect(**connection_config)
     try:
         cursor = connection.cursor()
@@ -227,10 +263,13 @@ def load_to_mysql(tables: dict[str, pd.DataFrame], connection_config: dict[str, 
                 for row in tables[table].itertuples(index=False, name=None)
             ]
             cursor.executemany(query, rows)
+            logger.info("Loaded %d rows into %s", len(rows), table)
             print(f"Loaded {len(rows)} rows into {table}")
         connection.commit()
+        logger.info("MySQL load completed successfully")
     except Exception:
         connection.rollback()
+        logger.exception("MySQL load failed")
         raise
     finally:
         connection.close()
@@ -252,12 +291,16 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    logger.info("Starting ETL run with source=%s, processed=%s, rejected=%s", args.source_dir, args.processed_dir, args.rejected_dir)
     tables, rejected = extract_transform(args.source_dir, args.processed_dir, args.rejected_dir)
-    print(f"Accepted {sum(len(frame) for frame in tables.values())} rows across {len(tables)} tables")
+    accepted_count = sum(len(frame) for frame in tables.values())
     rejected_count = sum(len(frame) for frame in rejected.values())
+    print(f"Accepted {accepted_count} rows across {len(tables)} tables")
     print(f"Rejected {rejected_count} rows; details written to {args.rejected_dir}")
+    logger.info("ETL run complete: accepted=%d rejected=%d", accepted_count, rejected_count)
     if args.dry_run:
         print("Dry run complete; no database changes made")
+        logger.info("Dry run complete; no database changes made")
         return
 
     config = {

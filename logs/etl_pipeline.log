@@ -1,0 +1,84 @@
+2026-10-03 14:31:34,912 - INFO - Cleaning table customers from C:\Users\raese\AppData\Local\Temp\tmpniqyc5l2\customers.csv
+2026-10-03 14:31:35,005 - INFO - Table customers: 1 valid rows, 0 rejected rows
+2026-10-03 14:31:35,018 - INFO - Cleaning table customers from C:\Users\raese\AppData\Local\Temp\tmp8gdwcqm7\customers.csv
+2026-10-03 14:31:35,046 - INFO - Table customers: 1 valid rows, 2 rejected rows
+2026-10-03 14:31:35,060 - INFO - Cleaning table orders from C:\Users\raese\AppData\Local\Temp\tmppj5lblsr\orders.csv
+2026-10-03 14:31:35,155 - INFO - Table orders: 0 valid rows, 1 rejected rows
+2026-10-03 14:31:35,165 - INFO - Cleaning table order_items from C:\Users\raese\AppData\Local\Temp\tmpij65ps4u\order_items.csv
+2026-10-03 14:31:35,198 - INFO - Table order_items: 0 valid rows, 1 rejected rows
+2026-10-03 14:31:35,204 - INFO - Cleaning table customers from C:\Users\raese\AppData\Local\Temp\tmp67cwfg3j\customers.csv
+2026-10-03 14:31:35,230 - INFO - Table customers: 1 valid rows, 1 rejected rows
+2026-10-03 14:31:35,234 - INFO - Starting extract-transform for source directory C:\Users\raese\delivery-data-engineering-project\data\raw
+2026-10-03 14:31:35,236 - INFO - Cleaning table customers from C:\Users\raese\delivery-data-engineering-project\data\raw\customers.csv
+2026-10-03 14:31:35,271 - INFO - Table customers: 250 valid rows, 0 rejected rows
+2026-10-03 14:31:35,272 - INFO - Cleaning table products from C:\Users\raese\delivery-data-engineering-project\data\raw\products.csv
+2026-10-03 14:31:35,302 - INFO - Table products: 35 valid rows, 0 rejected rows
+2026-10-03 14:31:35,304 - INFO - Cleaning table orders from C:\Users\raese\delivery-data-engineering-project\data\raw\orders.csv
+2026-10-03 14:31:35,364 - INFO - Table orders: 1000 valid rows, 0 rejected rows
+2026-10-03 14:31:35,365 - INFO - Cleaning table drivers from C:\Users\raese\delivery-data-engineering-project\data\raw\drivers.csv
+2026-10-03 14:31:35,386 - INFO - Table drivers: 30 valid rows, 0 rejected rows
+2026-10-03 14:31:35,388 - INFO - Cleaning table vehicles from C:\Users\raese\delivery-data-engineering-project\data\raw\vehicles.csv
+2026-10-03 14:31:35,434 - INFO - Table vehicles: 24 valid rows, 0 rejected rows
+2026-10-03 14:31:35,434 - INFO - Cleaning table order_items from C:\Users\raese\delivery-data-engineering-project\data\raw\order_items.csv
+2026-10-03 14:31:35,485 - INFO - Table order_items: 2273 valid rows, 0 rejected rows
+2026-10-03 14:31:35,486 - INFO - Cleaning table deliveries from C:\Users\raese\delivery-data-engineering-project\data\raw\deliveries.csv
+2026-10-03 14:31:35,635 - INFO - Table deliveries: 965 valid rows, 0 rejected rows
+2026-10-03 14:31:35,711 - INFO - Relationship validation rejected 0 rows across tables
+2026-10-03 14:31:35,722 - INFO - Wrote 250 accepted rows for customers
+2026-10-03 14:31:35,730 - INFO - Wrote 35 accepted rows for products
+2026-10-03 14:31:35,761 - INFO - Wrote 1000 accepted rows for orders
+2026-10-03 14:31:35,795 - INFO - Wrote 30 accepted rows for drivers
+2026-10-03 14:31:35,818 - INFO - Wrote 24 accepted rows for vehicles
+2026-10-03 14:31:35,830 - INFO - Wrote 2273 accepted rows for order_items
+2026-10-03 14:31:35,849 - INFO - Wrote 965 accepted rows for deliveries
+2026-10-03 14:31:35,853 - INFO - ETL summary: 4577 accepted rows, 0 rejected rows
+2026-10-03 14:31:35,915 - INFO - Starting extract-transform for source directory C:\Users\raese\AppData\Local\Temp\tmpils_pheg\raw
+2026-10-03 14:31:35,916 - INFO - Cleaning table customers from C:\Users\raese\AppData\Local\Temp\tmpils_pheg\raw\customers.csv
+2026-10-03 14:31:35,954 - INFO - Table customers: 250 valid rows, 1 rejected rows
+2026-10-03 14:31:35,955 - INFO - Cleaning table products from C:\Users\raese\AppData\Local\Temp\tmpils_pheg\raw\products.csv
+2026-10-03 14:31:35,979 - INFO - Table products: 35 valid rows, 0 rejected rows
+2026-10-03 14:31:35,981 - INFO - Cleaning table orders from C:\Users\raese\AppData\Local\Temp\tmpils_pheg\raw\orders.csv
+2026-10-03 14:31:36,049 - INFO - Table orders: 1000 valid rows, 0 rejected rows
+2026-10-03 14:31:36,051 - INFO - Cleaning table drivers from C:\Users\raese\AppData\Local\Temp\tmpils_pheg\raw\drivers.csv
+2026-10-03 14:31:36,072 - INFO - Table drivers: 30 valid rows, 0 rejected rows
+2026-10-03 14:31:36,074 - INFO - Cleaning table vehicles from C:\Users\raese\AppData\Local\Temp\tmpils_pheg\raw\vehicles.csv
+2026-10-03 14:31:36,088 - INFO - Table vehicles: 24 valid rows, 0 rejected rows
+2026-10-03 14:31:36,092 - INFO - Cleaning table order_items from C:\Users\raese\AppData\Local\Temp\tmpils_pheg\raw\order_items.csv
+2026-10-03 14:31:36,148 - INFO - Table order_items: 2273 valid rows, 0 rejected rows
+2026-10-03 14:31:36,149 - INFO - Cleaning table deliveries from C:\Users\raese\AppData\Local\Temp\tmpils_pheg\raw\deliveries.csv
+2026-10-03 14:31:36,219 - INFO - Table deliveries: 965 valid rows, 0 rejected rows
+2026-10-03 14:31:36,244 - INFO - Relationship validation rejected 0 rows across tables
+2026-10-03 14:31:36,252 - INFO - Wrote 250 accepted rows for customers
+2026-10-03 14:31:36,265 - INFO - Wrote 35 accepted rows for products
+2026-10-03 14:31:36,278 - INFO - Wrote 1000 accepted rows for orders
+2026-10-03 14:31:36,293 - INFO - Wrote 30 accepted rows for drivers
+2026-10-03 14:31:36,304 - INFO - Wrote 24 accepted rows for vehicles
+2026-10-03 14:31:36,316 - INFO - Wrote 2273 accepted rows for order_items
+2026-10-03 14:31:36,323 - INFO - Wrote 965 accepted rows for deliveries
+2026-10-03 14:31:36,333 - INFO - Wrote 1 rejected rows for customers
+2026-10-03 14:31:36,341 - INFO - Wrote 0 rejected rows for products
+2026-10-03 14:31:36,346 - INFO - Wrote 0 rejected rows for orders
+2026-10-03 14:31:36,349 - INFO - Wrote 0 rejected rows for drivers
+2026-10-03 14:31:36,351 - INFO - Wrote 0 rejected rows for vehicles
+2026-10-03 14:31:36,371 - INFO - Wrote 0 rejected rows for order_items
+2026-10-03 14:31:36,374 - INFO - Wrote 0 rejected rows for deliveries
+2026-10-03 14:31:36,376 - INFO - ETL summary: 4577 accepted rows, 1 rejected rows
+2026-10-03 14:31:36,913 - INFO - Starting extract-transform for source directory C:\Users\raese\AppData\Local\Temp\tmpmb09p6ub\raw
+2026-10-03 14:31:36,916 - INFO - Cleaning table customers from C:\Users\raese\AppData\Local\Temp\tmpmb09p6ub\raw\customers.csv
+2026-10-03 14:31:36,977 - INFO - Table customers: 250 valid rows, 0 rejected rows
+2026-10-03 14:31:36,978 - INFO - Cleaning table products from C:\Users\raese\AppData\Local\Temp\tmpmb09p6ub\raw\products.csv
+2026-10-03 14:31:37,000 - INFO - Table products: 35 valid rows, 0 rejected rows
+2026-10-03 14:31:37,002 - INFO - Cleaning table orders from C:\Users\raese\AppData\Local\Temp\tmpmb09p6ub\raw\orders.csv
+2026-10-03 14:31:37,068 - INFO - Table orders: 1000 valid rows, 0 rejected rows
+2026-10-03 14:31:37,069 - INFO - Cleaning table drivers from C:\Users\raese\AppData\Local\Temp\tmpmb09p6ub\raw\drivers.csv
+2026-10-03 14:31:37,097 - INFO - Table drivers: 30 valid rows, 0 rejected rows
+2026-10-03 14:31:37,098 - INFO - Cleaning table vehicles from C:\Users\raese\AppData\Local\Temp\tmpmb09p6ub\raw\vehicles.csv
+2026-10-03 14:31:37,122 - INFO - Table vehicles: 24 valid rows, 0 rejected rows
+2026-10-03 14:31:37,127 - INFO - Cleaning table order_items from C:\Users\raese\AppData\Local\Temp\tmpmb09p6ub\raw\order_items.csv
+2026-10-03 14:31:37,201 - INFO - Table order_items: 2273 valid rows, 0 rejected rows
+2026-10-03 14:31:37,202 - INFO - Cleaning table deliveries from C:\Users\raese\AppData\Local\Temp\tmpmb09p6ub\raw\deliveries.csv
+2026-10-03 14:31:37,267 - INFO - Table deliveries: 965 valid rows, 0 rejected rows
+2026-10-03 14:31:37,282 - INFO - Relationship validation rejected 0 rows across tables
+2026-10-03 14:31:37,283 - INFO - ETL summary: 4577 accepted rows, 0 rejected rows
+2026-10-03 14:31:37,341 - WARNING - Rejected 1 rows from order_items due to invalid relationships
+2026-10-03 14:31:37,344 - INFO - Relationship validation rejected 1 rows across tables

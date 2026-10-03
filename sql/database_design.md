@@ -6,6 +6,81 @@ The Delivery & Logistics Data Engineering Project uses a relational database to 
 
 The database is designed to keep related information in separate tables and connect the tables using primary keys and foreign keys.
 
+## Architecture Overview
+
+```mermaid
+flowchart LR
+    A[Raw CSV source files] --> B[Python ETL pipeline\nclean + validate + reject]
+    B --> C[Processed CSV outputs]
+    B --> D[Rejected row quarantine]
+    C --> E[MySQL delivery_db]
+    F[SQL setup + seed scripts] --> E
+    G[Business insights dashboard] --> C
+    E --> H[Reporting + analytics queries]
+```
+
+## Entity Relationship Diagram
+
+```mermaid
+erDiagram
+    CUSTOMERS ||--o{ ORDERS : places
+    CUSTOMERS {
+        INT customer_id PK
+        VARCHAR name
+        VARCHAR email
+        VARCHAR phone
+        VARCHAR city
+    }
+
+    ORDERS ||--o{ ORDER_ITEMS : contains
+    ORDERS ||--o{ DELIVERIES : has
+    ORDERS {
+        INT order_id PK
+        INT customer_id FK
+        DATE order_date
+        VARCHAR status
+        DECIMAL total_amount
+    }
+
+    PRODUCTS ||--o{ ORDER_ITEMS : appears_in
+    PRODUCTS {
+        INT product_id PK
+        VARCHAR product_name
+        VARCHAR category
+        DECIMAL price
+    }
+
+    ORDER_ITEMS {
+        INT order_item_id PK
+        INT order_id FK
+        INT product_id FK
+        INT quantity
+    }
+
+    DRIVERS ||--o{ DELIVERIES : drives
+    DRIVERS {
+        INT driver_id PK
+        VARCHAR name
+        VARCHAR phone
+    }
+
+    VEHICLES ||--o{ DELIVERIES : assigned_to
+    VEHICLES {
+        INT vehicle_id PK
+        VARCHAR registration_number
+        VARCHAR vehicle_type
+    }
+
+    DELIVERIES {
+        INT delivery_id PK
+        INT order_id FK
+        INT driver_id FK
+        INT vehicle_id FK
+        DATE delivery_date
+        VARCHAR status
+    }
+```
+
 ---
 
 ## Database Tables

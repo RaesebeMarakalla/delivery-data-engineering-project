@@ -1,8 +1,37 @@
 # Delivery & Logistics Data Engineering Project
 
-## Overview
+## Business problem
 
-This project models the core data required by a delivery company: customers, products, orders, order items, drivers, vehicles, and deliveries. It is built as a practical data-engineering project using MySQL, SQL, Python, Pandas, and basic reporting.
+A modern delivery business needs accurate operational visibility across sales, inventory, and fulfillment. In practice, source data often arrives in inconsistent CSV files with missing values, invalid dates, duplicate keys, and broken relationships between orders, customers, products, drivers, and vehicles.
+
+Without a trusted data pipeline, leaders cannot reliably answer basic business questions such as:
+
+- Which products and categories generate the most revenue?
+- Which customers place the highest-value orders?
+- Are delivery and order statuses accurate and complete?
+- Which drivers and vehicles are being used most effectively?
+- Do order totals match the underlying order line items?
+
+## Solution overview
+
+This project addresses that problem by building a complete delivery-data platform using a relational database, ETL pipeline, and analytics layer. It creates a normalized MySQL schema for the core logistics domain, cleans and validates raw data with Python and Pandas, rejects bad records before they reach production, and produces business-ready reporting outputs.
+
+The result is a pragmatic data-engineering solution that demonstrates how to:
+
+- model a delivery business domain in a relational database
+- enforce relationships and data-quality constraints
+- transform messy source files into reliable analytics data
+- surface operational KPIs and revenue insights
+- support repeatable, testable data pipelines
+
+## What this project delivers
+
+- A production-style MySQL schema with seven linked tables and integrity rules.
+- A deterministic sample-data generator for realistic South African delivery scenarios.
+- A Python ETL pipeline that normalizes values, quarantines bad rows, and validates foreign keys.
+- SQL analytics for customer, order, product, delivery, and operational summaries.
+- Business insights reporting for revenue, averages, and delivery performance.
+- Automated regression and ETL-quality tests to keep the pipeline trustworthy.
 
 ## Work completed
 
