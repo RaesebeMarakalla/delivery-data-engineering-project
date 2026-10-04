@@ -212,6 +212,47 @@ python python/business_insights.py
 
 This script reads the cleaned CSVs in `data/processed/`, calculates key metrics such as revenue by category, average order value, and delivery success rate, and writes the outputs to `reports/business_summary.md` and `reports/revenue_by_category.png`.
 
+## Docker quickstart
+
+The project can be run end-to-end with Docker Compose.
+
+1. Copy the sample environment file if you want to override defaults:
+
+```bash
+cp .env.example .env
+```
+
+2. Start the database and app containers:
+
+```bash
+docker compose up --build
+```
+
+This will:
+- start a MySQL 8 container with the SQL init scripts from `sql/`
+- build the Python app container
+- generate the sample dataset
+- run the ETL pipeline in dry-run mode
+- generate the business summary and chart
+
+MySQL is exposed on `localhost:3307` to avoid conflicting with a local MySQL
+server already using port `3306`. Containers communicate with MySQL on port
+`3306` internally.
+
+3. Open the application shell if you need to run commands manually:
+
+```bash
+docker compose exec app bash
+```
+
+4. To stop everything:
+
+```bash
+docker compose down
+```
+
+To persist the MySQL data across restarts, the `mysql_data` volume is created automatically.
+
 ## Automated tests
 
 GitHub Actions runs the quality tests on pushes and pull requests. The test workflow needs no API or database secrets and can also be started manually from the Actions tab.

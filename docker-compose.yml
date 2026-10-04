@@ -1,0 +1,48 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: delivery-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: delivery_db
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppass
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -prootpassword --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    command: --default-authentication-plugin=mysql_native_password
+
+  app:
+    build: .
+    container_name: delivery-app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_USER: appuser
+      DB_PASSWORD: apppass
+      DB_NAME: delivery_db
+      PYTHONUNBUFFERED: "1"
+    volumes:
+      - .:/app
+      - ./data:/app/data
+      - ./reports:/app/reports
+    command: >
+      bash -lc "python python/generate_sample_data.py
+      && python python/etl_pipeline.py --dry-run
+      && python python/business_insights.py
+      && tail -f /dev/null"
+
+volumes:
+  mysql_data:

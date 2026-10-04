@@ -310,3 +310,46 @@ INNER JOIN order_items oi ON o.order_id = oi.order_id
 INNER JOIN products p     ON oi.product_id = p.product_id
 GROUP BY o.order_id, o.total_amount
 HAVING o.total_amount <> SUM(oi.quantity * p.price);
+
+
+-- ############################################################
+-- PART 5: DASHBOARD KPI SNAPSHOT
+-- ############################################################
+
+-- 5.1 Executive summary values for a high-level dashboard
+SELECT
+    (SELECT COUNT(*) FROM customers) AS total_customers,
+    (SELECT COUNT(*) FROM products) AS total_products,
+    (SELECT COUNT(*) FROM drivers) AS total_drivers,
+    (SELECT COUNT(*) FROM vehicles) AS total_vehicles,
+    (SELECT COUNT(*) FROM orders) AS total_orders,
+    (SELECT SUM(total_amount) FROM orders) AS total_revenue,
+    (SELECT ROUND(AVG(total_amount), 2) FROM orders) AS avg_order_value,
+    (SELECT COUNT(*) FROM deliveries WHERE status = 'Delivered') AS delivered_orders,
+    (SELECT ROUND(100 * COUNT(*) / NULLIF((SELECT COUNT(*) FROM deliveries), 0), 1)
+     FROM deliveries
+     WHERE status = 'Delivered') AS delivery_success_rate,
+    (SELECT ROUND(AVG(DATEDIFF(d.delivery_date, o.order_date)), 2)
+     FROM deliveries d
+     INNER JOIN orders o ON d.order_id = o.order_id
+     WHERE d.status = 'Delivered') AS avg_days_to_deliver,
+    (SELECT p.category
+     FROM order_items oi
+     INNER JOIN products p ON oi.product_id = p.product_id
+     GROUP BY p.category
+     ORDER BY SUM(oi.quantity * p.price) DESC
+     LIMIT 1) AS top_revenue_category,
+    (SELECT c.name
+     FROM orders o
+     INNER JOIN customers c ON c.customer_id = o.customer_id
+     GROUP BY c.customer_id, c.name
+     ORDER BY SUM(o.total_amount) DESC
+     LIMIT 1) AS top_customer,
+    (SELECT c.city
+     FROM orders o
+     INNER JOIN customers c ON c.customer_id = o.customer_id
+     INNER JOIN order_items oi ON o.order_id = oi.order_id
+     INNER JOIN products p ON oi.product_id = p.product_id
+     GROUP BY c.city
+     ORDER BY SUM(oi.quantity * p.price) DESC
+     LIMIT 1) AS top_city_by_revenue;

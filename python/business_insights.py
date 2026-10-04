@@ -44,6 +44,8 @@ def calculate_business_insights(tables: dict[str, pd.DataFrame]) -> dict[str, An
     products = tables["products"].copy()
     order_items = tables["order_items"].copy()
     deliveries = tables["deliveries"].copy()
+    drivers = tables["drivers"].copy()
+    vehicles = tables["vehicles"].copy()
 
     for frame in (orders, customers, products, order_items, deliveries):
         for column in frame.columns:
@@ -62,9 +64,25 @@ def calculate_business_insights(tables: dict[str, pd.DataFrame]) -> dict[str, An
     total_revenue = float(revenue_by_category["category_revenue"].sum())
     avg_order_value = float(orders["total_amount"].mean()) if not orders.empty else 0.0
     total_orders = int(len(orders))
+    total_customers = int(customers["customer_id"].nunique())
+    total_products = int(products["product_id"].nunique())
+    total_drivers = int(drivers["driver_id"].nunique())
+    total_vehicles = int(vehicles["vehicle_id"].nunique())
     delivered_orders = int((deliveries["status"] == "Delivered").sum())
     total_deliveries = int(len(deliveries))
     delivery_success_rate = (delivered_orders / total_deliveries * 100) if total_deliveries else 0.0
+    pending_orders = int((orders["status"] == "Pending").sum()) if "status" in orders.columns else 0
+    processing_orders = int((orders["status"] == "Processing").sum()) if "status" in orders.columns else 0
+    cancelled_orders = int((orders["status"] == "Cancelled").sum()) if "status" in orders.columns else 0
+    total_order_items = int(len(order_items))
+
+    delivery_windows = deliveries.merge(orders[["order_id", "order_date"]], on="order_id", how="left")
+    delivery_windows["days_to_deliver"] = (
+        (delivery_windows["delivery_date"] - delivery_windows["order_date"]).dt.days
+    )
+    avg_delivery_days = float(
+        delivery_windows.loc[delivery_windows["status"] == "Delivered", "days_to_deliver"].mean()
+    ) if not delivery_windows.empty else 0.0
 
     revenue_by_city = (
         orders.merge(customers[["customer_id", "city"]], on="customer_id")
@@ -75,6 +93,17 @@ def calculate_business_insights(tables: dict[str, pd.DataFrame]) -> dict[str, An
         .sum()
         .rename(columns={"line_revenue": "revenue"})
         .sort_values(["city", "revenue"], ascending=[True, False])
+    )
+
+    city_revenue = (
+        orders.merge(customers[["customer_id", "city"]], on="customer_id")
+        .merge(order_items, on="order_id")
+        .merge(products[["product_id", "price"]], on="product_id")
+        .assign(line_revenue=lambda df: df["quantity"] * df["price"])
+        .groupby("city", as_index=False)["line_revenue"]
+        .sum()
+        .rename(columns={"line_revenue": "city_revenue"})
+        .sort_values("city_revenue", ascending=False)
     )
 
     customer_spend = (
@@ -96,21 +125,33 @@ def calculate_business_insights(tables: dict[str, pd.DataFrame]) -> dict[str, An
     best_category = revenue_by_category.iloc[0].to_dict() if not revenue_by_category.empty else {}
     top_customer = customer_spend.iloc[0].to_dict() if not customer_spend.empty else {}
     top_driver = delivery_per_driver.iloc[0].to_dict() if not delivery_per_driver.empty else {}
+    top_city = city_revenue.iloc[0].to_dict() if not city_revenue.empty else {}
 
     return {
         "total_orders": total_orders,
+        "total_customers": total_customers,
+        "total_products": total_products,
+        "total_drivers": total_drivers,
+        "total_vehicles": total_vehicles,
         "total_revenue": total_revenue,
         "avg_order_value": avg_order_value,
+        "avg_delivery_days": avg_delivery_days,
         "total_deliveries": total_deliveries,
         "delivered_orders": delivered_orders,
+        "pending_orders": pending_orders,
+        "processing_orders": processing_orders,
+        "cancelled_orders": cancelled_orders,
+        "total_order_items": total_order_items,
         "delivery_success_rate": delivery_success_rate,
         "revenue_by_category": revenue_by_category,
         "revenue_by_city": revenue_by_city,
+        "city_revenue": city_revenue,
         "customer_spend": customer_spend,
         "delivery_per_driver": delivery_per_driver,
         "best_category": best_category,
         "top_customer": top_customer,
         "top_driver": top_driver,
+        "top_city": top_city,
     }
 
 
@@ -120,29 +161,39 @@ def save_summary_markdown(insights: dict[str, Any], output_path: Path) -> None:
     category = insights["best_category"]
     customer = insights["top_customer"]
     driver = insights["top_driver"]
+    city = insights["top_city"]
 
     summary = f"""# Delivery Business Summary
 
 ## KPIs
 - Total orders: {insights['total_orders']}
-- Total revenue: $ {insights['total_revenue']:,.2f}
-- Average order value: $ {insights['avg_order_value']:,.2f}
+- Total customers: {insights['total_customers']}
+- Total products: {insights['total_products']}
+- Total drivers: {insights['total_drivers']}
+- Total vehicles: {insights['total_vehicles']}
+- Total revenue: R {insights['total_revenue']:,.2f}
+- Average order value: R {insights['avg_order_value']:,.2f}
+- Average days to deliver: {insights['avg_delivery_days']:.1f} days
 - Total deliveries: {insights['total_deliveries']}
 - Delivered orders: {insights['delivered_orders']}
 - Delivery success rate: {insights['delivery_success_rate']:.1f}%
+- Pending orders: {insights['pending_orders']}
+- Processing orders: {insights['processing_orders']}
+- Cancelled orders: {insights['cancelled_orders']}
 
 ## Top performers
-- Top revenue category: {category.get('category', 'N/A')} ($ {category.get('category_revenue', 0):,.2f})
-- Top customer: {customer.get('name', 'N/A')} from {customer.get('city', 'N/A')} ($ {customer.get('total_spent', 0):,.2f})
+- Top revenue category: {category.get('category', 'N/A')} (R {category.get('category_revenue', 0):,.2f})
+- Top city by revenue: {city.get('city', 'N/A')} (R {city.get('city_revenue', 0):,.2f})
+- Top customer: {customer.get('name', 'N/A')} from {customer.get('city', 'N/A')} (R {customer.get('total_spent', 0):,.2f})
 - Top driver by delivery count: {driver.get('name', 'N/A')} ({driver.get('delivery_count', 0)} deliveries)
 
 ## Revenue by category
-| Category | Revenue |
+| Category | Revenue (R) |
 | --- | ---: |
 """
 
     for _, row in insights["revenue_by_category"].iterrows():
-        summary += f"| {row['category']} | $ {row['category_revenue']:,.2f} |\n"
+        summary += f"| {row['category']} | R {row['category_revenue']:,.2f} |\n"
 
     output_path.write_text(summary, encoding="utf-8")
 
@@ -157,7 +208,7 @@ def save_category_chart(revenue_by_category: pd.DataFrame, output_path: Path) ->
     ax.bar(categories, revenue, color=["#4c78a8", "#f58518", "#54a24b", "#e45756"])
     ax.set_title("Revenue by Product Category")
     ax.set_xlabel("Category")
-    ax.set_ylabel("Revenue")
+    ax.set_ylabel("Revenue (R)")
     ax.grid(axis="y", linestyle="--", alpha=0.3)
     plt.tight_layout()
     fig.savefig(output_path, dpi=200)
@@ -176,8 +227,10 @@ def main() -> None:
     save_category_chart(insights["revenue_by_category"], args.report_dir / "revenue_by_category.png")
 
     print(f"Total orders: {insights['total_orders']}")
-    print(f"Total revenue: $ {insights['total_revenue']:,.2f}")
-    print(f"Average order value: $ {insights['avg_order_value']:,.2f}")
+    print(f"Total customers: {insights['total_customers']}")
+    print(f"Total revenue: R {insights['total_revenue']:,.2f}")
+    print(f"Average order value: R {insights['avg_order_value']:,.2f}")
+    print(f"Average days to deliver: {insights['avg_delivery_days']:.1f} days")
     print(f"Delivery success rate: {insights['delivery_success_rate']:.1f}%")
     print(f"Saved summary to {args.report_dir / 'business_summary.md'}")
     print(f"Saved chart to {args.report_dir / 'revenue_by_category.png'}")

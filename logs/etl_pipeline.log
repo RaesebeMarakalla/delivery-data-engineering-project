@@ -82,3 +82,37 @@
 2026-10-03 14:31:37,283 - INFO - ETL summary: 4577 accepted rows, 0 rejected rows
 2026-10-03 14:31:37,341 - WARNING - Rejected 1 rows from order_items due to invalid relationships
 2026-10-03 14:31:37,344 - INFO - Relationship validation rejected 1 rows across tables
+2026-10-04 20:23:57,502 - INFO - Starting ETL run with source=/app/data/raw, processed=/app/data/processed, rejected=/app/data/rejected
+2026-10-04 20:23:57,509 - INFO - Starting extract-transform for source directory /app/data/raw
+2026-10-04 20:23:57,515 - INFO - Cleaning table customers from /app/data/raw/customers.csv
+2026-10-04 20:23:57,574 - INFO - Table customers: 250 valid rows, 0 rejected rows
+2026-10-04 20:23:57,580 - INFO - Cleaning table products from /app/data/raw/products.csv
+2026-10-04 20:23:57,624 - INFO - Table products: 35 valid rows, 0 rejected rows
+2026-10-04 20:23:57,630 - INFO - Cleaning table orders from /app/data/raw/orders.csv
+2026-10-04 20:23:57,678 - INFO - Table orders: 1000 valid rows, 0 rejected rows
+2026-10-04 20:23:57,681 - INFO - Cleaning table drivers from /app/data/raw/drivers.csv
+2026-10-04 20:23:57,712 - INFO - Table drivers: 30 valid rows, 0 rejected rows
+2026-10-04 20:23:57,721 - INFO - Cleaning table vehicles from /app/data/raw/vehicles.csv
+2026-10-04 20:23:57,770 - INFO - Table vehicles: 24 valid rows, 0 rejected rows
+2026-10-04 20:23:57,781 - INFO - Cleaning table order_items from /app/data/raw/order_items.csv
+2026-10-04 20:23:57,899 - INFO - Table order_items: 2273 valid rows, 0 rejected rows
+2026-10-04 20:23:57,916 - INFO - Cleaning table deliveries from /app/data/raw/deliveries.csv
+2026-10-04 20:23:58,041 - INFO - Table deliveries: 965 valid rows, 0 rejected rows
+2026-10-04 20:23:58,093 - INFO - Relationship validation rejected 0 rows across tables
+2026-10-04 20:23:58,283 - INFO - Wrote 250 accepted rows for customers
+2026-10-04 20:23:58,326 - INFO - Wrote 35 accepted rows for products
+2026-10-04 20:23:58,499 - INFO - Wrote 1000 accepted rows for orders
+2026-10-04 20:23:58,559 - INFO - Wrote 30 accepted rows for drivers
+2026-10-04 20:23:58,679 - INFO - Wrote 24 accepted rows for vehicles
+2026-10-04 20:23:58,709 - INFO - Wrote 2273 accepted rows for order_items
+2026-10-04 20:23:58,745 - INFO - Wrote 965 accepted rows for deliveries
+2026-10-04 20:23:58,766 - INFO - Wrote 0 rejected rows for customers
+2026-10-04 20:23:58,782 - INFO - Wrote 0 rejected rows for products
+2026-10-04 20:23:58,797 - INFO - Wrote 0 rejected rows for orders
+2026-10-04 20:23:58,814 - INFO - Wrote 0 rejected rows for drivers
+2026-10-04 20:23:58,830 - INFO - Wrote 0 rejected rows for vehicles
+2026-10-04 20:23:58,850 - INFO - Wrote 0 rejected rows for order_items
+2026-10-04 20:23:58,874 - INFO - Wrote 0 rejected rows for deliveries
+2026-10-04 20:23:58,876 - INFO - ETL summary: 4577 accepted rows, 0 rejected rows
+2026-10-04 20:23:58,878 - INFO - ETL run complete: accepted=4577 rejected=0
+2026-10-04 20:23:58,879 - INFO - Dry run complete; no database changes made
