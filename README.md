@@ -239,6 +239,17 @@ MySQL is exposed on `localhost:3307` to avoid conflicting with a local MySQL
 server already using port `3306`. Containers communicate with MySQL on port
 `3306` internally.
 
+The `Publish Docker image` GitHub Actions workflow builds and publishes the app
+image to
+[`ghcr.io/raesebemarakalla/delivery-data-engineering-project`](https://github.com/RaesebeMarakalla/delivery-data-engineering-project/pkgs/container/delivery-data-engineering-project)
+when changes are pushed to `main` or a `v*` tag is pushed. After the first
+successful publish, use the package page to set its visibility to Public if
+you want anyone to be able to pull it:
+
+```bash
+docker pull ghcr.io/raesebemarakalla/delivery-data-engineering-project:latest
+```
+
 3. Open the application shell if you need to run commands manually:
 
 ```bash
