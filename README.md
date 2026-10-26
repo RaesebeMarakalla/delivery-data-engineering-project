@@ -277,3 +277,7 @@ python -m unittest discover -s tests
 ```
 
 The checks cover CSV extraction, schema normalization, required values, duplicate primary keys, invalid dates and quantities, foreign-key relationships, and rejected-row output.
+
+
+## Demo Video
+[Watch the project demo on YouTube](https://youtu.be/AoqOg4or2Z8)
